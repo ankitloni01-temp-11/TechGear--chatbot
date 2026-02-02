@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Support</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <i class="fa-solid fa-robot logo-icon"></i>
+                <h2>TechGear Assistant</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" id="chatNav">
+                    <i class="fa-solid fa-message"></i>
+                    <span>Chat</span>
+                </a>
+                <a href="#" class="nav-item" id="historyNav">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                    <span>History</span>
+                </a>
+                <a href="#" class="nav-item" id="restartBtn">
+                    <i class="fa-solid fa-rotate"></i>
+                    <span>Restart Chat</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <div class="avatar">U</div>
+                    <div class="user-info">
+                        <span class="name">User</span>
+                        <span class="status">Online</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Chat Area -->
+        <main class="chat-area" id="chatArea">
+            <header class="chat-header">
+                <div class="header-info">
+                    <h1>Customer Support</h1>
+                    <span class="status-badge"><span class="dot"></span>Live Agent (AI)</span>
+                </div>
+                <div class="header-actions">
+                    <button class="icon-btn"><i class="fa-regular fa-bell"></i></button>
+                    <button class="icon-btn"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                </div>
+            </header>
+
+            <div class="messages-container" id="messagesContainer">
+                <!-- Welcome Message -->
+                <div class="message output-message">
+                    <div class="message-content">
+                        <p>Hello! I'm your TechGear Assistant. How can I help you today?</p>
+                        <span class="timestamp">Just now</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="input-area">
+                <form id="chatForm" class="input-container">
+                    <button type="button" class="attachment-btn"><i class="fa-solid fa-paperclip"></i></button>
+                    <input type="text" id="userInput" placeholder="Type your message..." autocomplete="off">
+                    <button type="submit" class="send-btn">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </form>
+            </div>
+        </main>
+
+        <!-- History Area (Hidden by default) -->
+        <main class="chat-area hidden" id="historyArea">
+            <header class="chat-header">
+                <div class="header-info">
+                    <h1>Recent History</h1>
+                    <span class="status-badge">Last 5 interactions</span>
+                </div>
+            </header>
+            <div class="messages-container" id="historyContainer">
+                <!-- History Items will be injected here -->
+            </div>
+        </main>
+    </div>
+
+    <script src="/script.js"></script>
+</body>
+
+</html>
