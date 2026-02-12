@@ -10,9 +10,6 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
-    services:
-      # Optional: if you need a separate db service, but here we use the containerized app
-      # which includes ChromaDB. We'll build the whole stack.
 
     steps:
     - uses: actions/checkout@v3
