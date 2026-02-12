@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.models import ChatRequest, ChatResponse
 from app.graph import build_graph
 import time
+# TechGear Assistant - Main API Entrypoint
 import os
 from dotenv import load_dotenv
 
