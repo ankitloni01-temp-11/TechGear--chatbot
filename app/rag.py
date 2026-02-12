@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 from langchain_google_genai import GoogleGenerativeAIEmbeddings, ChatGoogleGenerativeAI
 from langchain_chroma import Chroma
 from langchain_core.prompts import ChatPromptTemplate
+from app.prompt_loader import load_prompt
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough
 
@@ -14,7 +15,10 @@ CHROMA_PATH = "data/chroma_db"
 
 def get_rag_chain():
     # 1. Initialize Vector Store
-    embeddings = GoogleGenerativeAIEmbeddings(model="models/text-embedding-004")
+    embeddings = GoogleGenerativeAIEmbeddings(
+        model="models/gemini-embedding-001",
+        google_api_key=os.getenv("GEMINI_API_KEY")
+    )
     
     if not os.path.exists(CHROMA_PATH):
         raise FileNotFoundError(f"ChromaDB not found at {CHROMA_PATH}. Run ingest first.")
@@ -26,8 +30,9 @@ def get_rag_chain():
     
     # 2. Define LLM
     llm = ChatGoogleGenerativeAI(
-        model="gemini-2.5-flash",
-        temperature=0.3
+        model="gemini-2.5-flash-lite",
+        temperature=0.3,
+        google_api_key=os.getenv("GEMINI_API_KEY")
     )
     
     # 3. Create Retriever
@@ -39,38 +44,11 @@ def get_rag_chain():
     # 4. Define Prompts
     
     # Prompt for rephrasing the question
-    rephrase_template = """Given the following conversation history and a follow-up question, 
-    rephrase the follow-up question to be a standalone question that can be understood 
-    without the conversation history.
-    
-    History:
-    {history}
-    
-    Follow-up: {question}
-    Standalone Question:"""
-    rephrase_prompt = ChatPromptTemplate.from_template(rephrase_template)
+    rephrase_prompt = load_prompt("rephrase")
     rephrase_chain = rephrase_prompt | llm | StrOutputParser()
 
     # Prompt for answering the rephrased question
-    template = """You are a helpful customer support assistant for TechGear Electronics.
-    
-    Use the following pieces of context to answer the user's question. 
-    If you don't know the answer, just say that you don't know, don't try to make up an answer.
-    Always be polite and professional.
-    
-    Formatting Guidelines:
-    - Use a clean, natural conversational tone.
-    - If listing items, place each item on a new line OR use commas to separate them clearly.
-    - Do NOT use markdown bolding (e.g., **text**) or asterisks for bullets. 
-    - Keep the output minimal and easy to read.
-    
-    Context:
-    {context}
-    
-    Question: {question}
-    
-    Answer:"""
-    prompt = ChatPromptTemplate.from_template(template)
+    prompt = load_prompt("rag")
     
     # 5. Build Chain
     def format_docs(docs):

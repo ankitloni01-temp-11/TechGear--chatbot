@@ -41,7 +41,10 @@ def ingest_data():
     if os.path.exists(CHROMA_PATH):
         shutil.rmtree(CHROMA_PATH)
         
-    embeddings = GoogleGenerativeAIEmbeddings(model="models/text-embedding-004")
+    embeddings = GoogleGenerativeAIEmbeddings(
+        model="models/gemini-embedding-001",
+        google_api_key=os.getenv("GEMINI_API_KEY")
+    )
     
     vector_store = Chroma.from_documents(
         documents=chunks,

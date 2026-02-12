@@ -3,6 +3,7 @@ from langgraph.graph import StateGraph, START, END
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.prompts import ChatPromptTemplate
 from app.rag import get_rag_chain
+from app.prompt_loader import load_prompt
 import os
 from dotenv import load_dotenv
 
@@ -23,21 +24,13 @@ def classifier_node(state: GraphState):
     question = state["question"]
     # We can also pass history to the classifier if needed for context-dependent routing
     
-    llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0)
+    llm = ChatGoogleGenerativeAI(
+        model="gemini-2.5-flash-lite",
+        temperature=0,
+        google_api_key=os.getenv("GEMINI_API_KEY")
+    )
     
-    template = """You are a customer support query routing assistant.
-    Analyze the user's question and classify it into one of the following categories:
-    
-    - technical: Questions about product features, specs, how-to, or compatibility.
-    - returns: Questions about returning products, refunds, or warranty claims.
-    - general: Greetings, general inquiries, or unclear utility.
-    
-    Return ONLY the category name (technical, returns, or general).
-    
-    Question: {question}
-    """
-    
-    prompt = ChatPromptTemplate.from_template(template)
+    prompt = load_prompt("classifier")
     chain = prompt | llm
     
     category = chain.invoke({"question": question}).content.strip().lower()
@@ -63,7 +56,11 @@ def escalation_node(state: GraphState):
     print("---ESCALATION (SUPERVISOR)---")
     question = state["question"]
     
-    llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0.5)
+    llm = ChatGoogleGenerativeAI(
+        model="gemini-2.5-flash-lite",
+        temperature=0.5,
+        google_api_key=os.getenv("GEMINI_API_KEY")
+    )
     
     # Context (Policy)
     policy_context = """
@@ -72,27 +69,7 @@ def escalation_node(state: GraphState):
     Returns Portal: techgear.com/returns
     """
     
-    template = """You are a senior Support Supervisor at TechGear Electronics.
-    A customer is asking about returns or has a complaint.
-    
-    Your goal is to:
-    1. Be empathetic and professional. Acknowledge their situation.
-    2. Clearly explain our 7-day no-questions-asked return policy.
-    3. Guide them to use the Returns Portal or email support.
-    
-    Formatting Guidelines:
-    - Use a natural, empathetic tone.
-    - If listing steps or info, place each on a new line.
-    - Do NOT use markdown bolding (e.g., **text**) or asterisks for bullets.
-    
-    Policy Info:
-    {policy}
-    
-    Customer Query: {question}
-    
-    Response:"""
-    
-    prompt = ChatPromptTemplate.from_template(template)
+    prompt = load_prompt("escalation")
     chain = prompt | llm
     
     response = chain.invoke({"policy": policy_context, "question": question}).content

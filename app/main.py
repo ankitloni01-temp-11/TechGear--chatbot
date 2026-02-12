@@ -5,6 +5,14 @@ from app.models import ChatRequest, ChatResponse
 from app.graph import build_graph
 import time
 import os
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
+
+# Ensure GOOGLE_API_KEY is set for LangChain components
+if "GEMINI_API_KEY" in os.environ:
+    os.environ["GOOGLE_API_KEY"] = os.environ["GEMINI_API_KEY"]
 
 app = FastAPI(
     title="TechGear RAG Chatbot",

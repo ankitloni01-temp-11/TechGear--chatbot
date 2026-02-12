@@ -1,0 +1,5 @@
+History:
+{history}
+
+Follow-up: {question}
+Standalone Question:

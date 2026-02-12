@@ -1,0 +1,17 @@
+.venv
+__pycache__
+.git
+.gitignore
+*.pyc
+*.pyo
+*.pyd
+.db
+.sqlite3
+.env
+data/chroma_db
+.ipynb_checkpoints
+node_modules
+README.md
+implementation_plan.md
+task.md
+walkthrough.md
