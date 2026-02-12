@@ -1,4 +1,5 @@
 import pytest
+import os
 import httpx
 import asyncio
 from app.testing_agent import EvaluatorAgent
@@ -14,6 +15,10 @@ async def test_health_check():
 
 @pytest.mark.asyncio
 async def test_chatbot_scenarios():
+    api_key = os.getenv("GEMINI_API_KEY")
+    if not api_key:
+        pytest.fail("GEMINI_API_KEY is not set in the environment. Please check your GitHub Secrets.")
+        
     tester = EvaluatorAgent()
     scenarios = tester.get_test_scenarios()
     
